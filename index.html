@@ -91,6 +91,9 @@
 							<li><a href="#input" class="toc-link">Ввод (Input)</a></li>
 							<li><a href="#time" class="toc-link">Время (Time)</a></li>
 							<li><a href="#entrypoints" class="toc-link">Игровой цикл</a></li>
+							<li>
+								<a href="#system-window" class="toc-link">Модуль System</a>
+							</li>
 						</ul>
 					</div>
 
@@ -1170,7 +1173,6 @@ graphics.CreateCircle("Sun", "yellow", 400, 100, 0, 50)
 graphics.CreateSquare("Platform", "gray", 300, 500, 0, 200, 40)
 graphics.CreatePolygon("Star", "gold", [0,0, 50,100, 100,0, 0,60, 100,60])
 
-// НОВОЕ в v0.2
 graphics.CreateTriangle("Arrow", "red", 500, 300, 0, 50, 70)
 graphics.CreateLine("Laser", "cyan", 0, 0, 100, 100, 5)
 graphics.CreateEllipse("Planet", "blue", 600, 400, 30, 80, 50)</code></pre>
@@ -1200,8 +1202,8 @@ graphics.Sun.radius = 60        // изменение радиуса круга
 graphics.Platform.width = 300   // изменение размеров
 graphics.Platform.height = 50
 
-// Анимация свойств (НОВОЕ!)
-graphics.Player.Animate("x", 500, 2.0)     // плавное движение за 2 секунды
+// Анимация свойств
+graphics.Player.Animate("x", 500, 2.0)         // плавное движение за 2 секунды
 graphics.Player.Animate("rotation", 360, 1.0)  // вращение
 graphics.Player.Animate("scale", 2.0, 0.5)     // увеличение</code></pre>
 
@@ -1222,40 +1224,171 @@ graphics.AddToGroup("Enemy2", "Enemies")
 // Работа с группой
 var enemies = graphics.GetGroup("Enemies")
 for enemy in enemies {
-    enemy.x += 10  // двигаем всех врагов
+		enemy.x += 10  // двигаем всех врагов
 }
 
 // Слои (z-index)
-graphics.SetLayer("Player", 10)     // ближе к камере
+graphics.SetLayer("Player", 10)      // ближе к камере
 graphics.SetLayer("Background", -10) // дальше от камеры</code></pre>
+
+						<h3>📷 Камера</h3>
+						<pre><code>// Позиция и масштаб камеры
+graphics.CameraSetPosition(400, 300)
+graphics.CameraSetZoom(1.5)
+
+// Следование за объектом
+graphics.CameraFollow("Player")
+
+// Эффект тряски камеры
+graphics.CameraShake(duration = 0.5, intensity = 10)</code></pre>
+
+						<h3>✨ Эффекты и постобработка</h3>
+						<pre><code>// Эффекты для объектов
+graphics.ApplyEffect("Player", "blur", 5)          // размытие
+graphics.ApplyEffect("Enemy", "glow", 0.8)         // свечение
+graphics.ApplyEffect("Background", "vignette", 1.0)
+
+// Сброс эффектов
+graphics.ClearEffects("Player")</code></pre>
+
+						<h3>💥 Частицы (Particle System)</h3>
+						<pre><code>// Создание эмиттера частиц
+graphics.CreateParticleEmitter("Smoke", {
+		x: 300,
+		y: 350,
+		rate: 10,              // частицы в секунду
+		lifetime: 1.2,         // время жизни частицы
+		color: "gray",
+		size: [2, 8],          // мин/макс размер
+		speed: [10, 50],       // мин/макс скорость
+		spread: 45             // разброс направления
+})
+
+// Управление эмиттером
+graphics.EmitOnce("Smoke")   // разовый выброс (например, взрыв)
+graphics.EnableEmitter("Smoke", true)
+graphics.EnableEmitter("Smoke", false)</code></pre>
+
+						<h3>🧩 UI-элементы</h3>
+						<pre><code>// Кнопка
+graphics.CreateButton("PlayBtn", "button.png", 400, 400, 200, 80)
+graphics.OnClick("PlayBtn", function() {
+		StartGame()
+})
+
+// Прогресс-бар (HP / загрузка / мана)
+graphics.CreateProgressBar("HPBar", 50, 50, 200, 20)
+graphics.SetProgress("HPBar", 0.75)   // 75%
+
+// Текстовые подсказки (лейблы)
+graphics.CreateText("HintText", "font.ttf", 400, 650, 0, 18)
+graphics.HintText.text = "Нажмите [E], чтобы взаимодействовать"</code></pre>
+
+						<h3>🐞 Отладка (Debug)</h3>
+						<pre><code>// Включить отображение FPS
+graphics.DebugShowFPS(true)
+
+// Отладочная сетка
+graphics.DebugGrid(50)   // шаг сетки 50px
+
+// Показать рамки (boundings) объектов
+graphics.DebugDrawBounds(true)</code></pre>
 
 						<h3>🎬 Пример сложной сцены</h3>
 						<pre><code>defineF.Global CreateGameScene() {
-    // Фон
-    graphics.CreateSprite("Background", "bg.png", 400, 300, 0, 1.0)
-    graphics.SetLayer("Background", -100)
-    
-    // Игрок
-    graphics.CreateSprite("Player", "player.png", 400, 500, 0, 1.0)
-    graphics.Player.color = "#FF6B6B"  // HEX цвет
-    
-    // Враги (группа)
-    graphics.CreateGroup("Enemies")
-    for i in 0..5 {
-        var name = "Enemy" + i
-        graphics.CreateSprite(name, "enemy.png", 100 + i*150, 200, 0, 0.8)
-        graphics.AddToGroup(name, "Enemies")
-        graphics[name].color = "green"
-    }
-    
-    // UI элементы
-    graphics.CreateText("HealthText", "font.ttf", 50, 50, 0, 24)
-    graphics.CreateText("ScoreText", "font.ttf", 50, 80, 0, 24)
-    graphics.CreateRectangle("HealthBar", "red", 50, 100, 0, 200, 20)
-    
-    // Эффекты
-    graphics.CreateParticleSystem("Explosion", 400, 300)  // НОВОЕ!
-}</code></pre>
+	// Фон
+	graphics.CreateSprite("Background", "bg.png", 400, 300, 0, 1.0)
+	graphics.SetLayer("Background", -100)
+						
+	// Игрок
+	graphics.CreateSprite("Player", "player.png", 400, 500, 0, 1.0)
+	graphics.Player.color = "#FF6B6B"  // HEX цвет
+						
+	// Враги (группа)
+	graphics.CreateGroup("Enemies")
+	for i in 0..5 {
+			var name = "Enemy" + i
+			graphics.CreateSprite(name, "enemy.png", 100 + i*150, 200, 0, 0.8)
+			graphics.AddToGroup(name, "Enemies")
+			graphics[name].color = "green"
+	}
+						
+	// UI элементы
+	graphics.CreateText("HealthText", "font.ttf", 50, 50, 0, 24)
+	graphics.CreateText("ScoreText", "font.ttf", 50, 80, 0, 24)
+	graphics.CreateRectangle("HealthBar", "red", 50, 100, 0, 200, 20)
+						
+	// Частицы (взрыв в центре сцены)
+	graphics.CreateParticleEmitter("Explosion", {
+			x: 400, y: 300,
+			rate: 0,
+			lifetime: 0.8,
+			color: "orange",
+			size: [4, 16],
+			speed: [80, 200],
+			spread: 120
+	})
+
+	// Камера следует за игроком
+	graphics.CameraFollow("Player")
+	graphics.CameraSetZoom(1.2)
+			}</code></pre>
+					</section>
+
+					<section id="system-window">
+						<h2>
+							🖥 Модуль System
+							<span class="section-tag">system</span>
+						</h2>
+
+						<h3>📌 Управление окном</h3>
+						<pre><code>// Название окна
+system.Window.Name = "My Game Window"
+
+// Размеры
+system.Window.Width = 1280
+system.Window.Height = 720
+
+// Изменение размеров
+system.Window.Width += 100
+system.Window.Height -= 50
+
+// Позиция окна на экране
+system.Window.X = 200
+system.Window.Y = 100
+
+// Сдвиг окна
+system.Window.X += 20
+system.Window.Y -= 10
+
+// Полноэкранный режим
+system.Window.Fullscreen = true   // включить
+system.Window.Fullscreen = false  // выключить
+
+// Ограничения размеров
+system.Window.MinWidth = 640
+system.Window.MinHeight = 480
+system.Window.MaxWidth = 1920
+system.Window.MaxHeight = 1080</code></pre>
+
+						<h3>🛠 Дополнительные функции окна</h3>
+						<pre><code>// Переключить полноэкранный режим
+system.Window.ToggleFullscreen()
+
+// Свернуть, развернуть, скрыть
+system.Window.Minimize()
+system.Window.Maximize()
+system.Window.Restore()
+system.Window.Hide()
+system.Window.Show()
+
+// Центрировать окно
+system.Window.Center()
+
+// Проверка состояния
+var isFullscreen = system.Window.Fullscreen
+var w = system.Window.Width
+var h = system.Window.Height</code></pre>
 					</section>
 
 					<section id="input">
