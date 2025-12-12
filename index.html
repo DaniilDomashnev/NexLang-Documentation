@@ -2,9 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>NexLang v0.3 – Официальная документация</title>
+  <title>NexLang – Официальная документация</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="src/styles/styles.css" />
+  <link rel="stylesheet" href="src/styles/loading.css" />
   <link rel="icon" type="image/png" href="src/icons/icon.jpg" />
 </head>
 <body>
@@ -34,15 +35,13 @@
     </div>
   </header>
 
-	<br><br><br><br>
-
   <main class="page">
     <div class="layout">
       <!-- Боковое меню (TOC) -->
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-title">
           <span class="sidebar-title-dot"></span>
-          <span>Документация NexLang v0.3</span>
+          <span>Документация NexLang v0.4</span>
         </div>
 
         <div class="toc-group">
@@ -97,7 +96,7 @@
           <ul class="toc-list">
             <li><a href="#examples" class="toc-link">Примеры</a></li>
             <li><a href="#cheatsheet" class="toc-link">Шпаргалка</a></li>
-            <li><a href="#roadmap" class="toc-link">Roadmap v0.3+</a></li>
+            <li><a href="#roadmap" class="toc-link">Roadmap v0.4+</a></li>
           </ul>
         </div>
       </aside>
@@ -108,13 +107,13 @@
           <div class="doc-header-main">
             <div class="doc-header-text">
               <div class="doc-badge-row">
-                <span class="badge badge-accent">NexLang v0.3</span>
-                <span class="badge badge-soft">Ecrous Engine 2.x</span>
+                <span class="badge badge-accent">NexLang v0.4</span>
+                <span class="badge badge-soft">Ecrous Engine</span>
                 <span class="badge badge-new">Unified Spec</span>
               </div>
               <h1 class="doc-title">Язык сценариев NexLang</h1>
               <p class="doc-subtitle">
-                NexLang v0.3 — единая спецификация языка Ecrous/NX:
+                NexLang v0.4 - единая спецификация языка Ecrous/NX:
                 динамический, людочитаемый скриптовый язык без лишнего синтаксического шума,
                 заточенный под игровой движок Ecrous Engine.
               </p>
@@ -131,7 +130,7 @@
               </div>
               <div class="meta-row">
                 <span class="meta-label">Совместимость</span>
-                <span class="meta-value">Ecrous Engine 2.x</span>
+                <span class="meta-value">Ecrous Engine</span>
               </div>
               <span class="meta-chip">
                 <span class="dot"></span>
@@ -150,7 +149,7 @@
             плотной интеграцией с API движка (graphics, input, time, audio и т.д.).
           </p>
 
-          <h3>Ключевые особенности v0.3</h3>
+          <h3>Ключевые особенности v.0.4</h3>
           <ul>
             <li>Отсутствие <code>;</code> и <code>()</code> в условиях — меньше шума.</li>
             <li>Жёсткое правило: любая переменная должна быть инициализирована значением.</li>
@@ -687,21 +686,14 @@ for i in "0..<10" { ... }</code></pre>
         </section>
 
         <section id="roadmap">
-          <h2>Roadmap NexLang v0.3+ <span class="section-tag">roadmap</span></h2>
+          <h2>Roadmap NexLang v.0.4+ <span class="section-tag">roadmap</span></h2>
 
           <div class="roadmap-timeline">
             <div class="roadmap-phase">
-              <h3>Phase 1 — Consolidation</h3>
+              <h3>Сделать релиз</h3>
               <ul>
-                <li>Единый синтаксис Ecrous/NX → NexLang v0.3.</li>
+                <li>Единый синтаксис Ecrous/NX → NexLang</li>
                 <li>Стабилизация стандартной библиотеки.</li>
-              </ul>
-            </div>
-            <div class="roadmap-phase">
-              <h3>Phase 2 — Sugar (позже)</h3>
-              <ul>
-                <li>Синтаксический сахар для стрелочных функций.</li>
-                <li>Расширенный синтаксис методов классов.</li>
               </ul>
             </div>
           </div>
@@ -719,7 +711,7 @@ for i in "0..<10" { ... }</code></pre>
       </div>
       <div class="footer-section">
         <h4>Документация</h4>
-        <p>Эта страница — официальная спецификация NexLang v0.3.</p>
+        <p>Эта страница — официальная спецификация NexLang v.0.4.</p>
       </div>
     </div>
     <div class="footer-bottom">
@@ -727,41 +719,18 @@ for i in "0..<10" { ... }</code></pre>
     </div>
   </footer>
 
+  <!-- Loading Screen -->
+  <div id="app-loading" class="app-loading">
+    <div class="loading-core">
+      <div class="loading-logo">N</div>
+      <div class="loading-text">Loading NexLang Docs</div>
+      <div class="loading-bar">
+        <div class="loading-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
 	<script src="src/script.js"></script>
-  <script>
-    const links = Array.from(document.querySelectorAll('.toc-link'));
-    const sections = links.map(link => document.querySelector(link.getAttribute('href')));
-
-    function onScroll() {
-      const scrollPos = window.scrollY + 120;
-      let activeIndex = 0;
-      sections.forEach((sec, idx) => {
-        if (sec && sec.offsetTop <= scrollPos) {
-          activeIndex = idx;
-        }
-      });
-      links.forEach((l, i) => {
-        l.classList.toggle('active', i === activeIndex);
-      });
-    }
-
-    window.addEventListener('scroll', onScroll);
-    onScroll();
-
-    const scrollToTopBtn = document.getElementById('scrollToTop');
-    if (scrollToTopBtn) {
-      scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
-
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebar = document.getElementById('sidebar');
-    if (menuToggle && sidebar) {
-      menuToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-      });
-    }
-  </script>
+  <script src="src/loading.js"></script>
 </body>
 </html>
